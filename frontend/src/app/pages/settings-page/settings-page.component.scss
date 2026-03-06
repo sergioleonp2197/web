@@ -1,0 +1,99 @@
+.settings-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--text-strong);
+}
+
+header p {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+}
+
+.settings-form {
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  background: var(--surface-card);
+  box-shadow: var(--soft-shadow);
+  padding: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.avatar-editor {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+}
+
+.avatar-editor img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid color-mix(in oklab, var(--accent-strong), white 70%);
+  box-shadow: var(--soft-shadow);
+}
+
+.avatar-editor input[type='file'] {
+  display: none;
+}
+
+.avatar-upload-btn {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.avatar-upload-btn:hover {
+  transform: translateY(-1px);
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+input,
+textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: var(--text-strong);
+  padding: 0.65rem 0.75rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  justify-self: start;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--accent-strong);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #b00020;
+  margin: 0;
+}

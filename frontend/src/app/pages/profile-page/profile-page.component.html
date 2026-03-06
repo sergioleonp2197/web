@@ -1,0 +1,66 @@
+@if (loadingProfile) {
+  <p class="state">Cargando perfil...</p>
+} @else if (error) {
+  <p class="state error">{{ error }}</p>
+} @else if (profile) {
+  <section class="profile-banner">
+    <div class="profile-main">
+      <img
+        [src]="profile.image || 'https://api.dicebear.com/9.x/thumbs/svg?seed=profile'"
+        alt="Avatar de perfil"
+      />
+      <div>
+        <h1>{{ profile.username }}</h1>
+        <p>{{ profile.bio || 'Sin bio aun.' }}</p>
+      </div>
+    </div>
+
+    @if (canFollow) {
+      <button type="button" (click)="toggleFollow()">
+        {{ profile.following ? 'Dejar de seguir' : 'Seguir' }}
+      </button>
+    }
+  </section>
+
+  <section class="profile-tabs">
+    <button type="button" [class.active]="activeTab === 'authored'" (click)="switchTab('authored')">
+      Articulos
+    </button>
+    <button type="button" [class.active]="activeTab === 'favorited'" (click)="switchTab('favorited')">
+      Favoritos
+    </button>
+  </section>
+
+  <section class="profile-filters">
+    <select [(ngModel)]="sort" (change)="applyFilters()">
+      <option value="latest">Mas recientes</option>
+      <option value="popular">Mas populares</option>
+      <option value="oldest">Mas antiguos</option>
+    </select>
+
+    @if (activeTab === 'authored' && isOwnProfile) {
+      <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option value="published">Solo publicados</option>
+        <option value="all">Publicados + borradores</option>
+      </select>
+    }
+  </section>
+
+  @if (loadingArticles) {
+    <p class="state">Cargando articulos...</p>
+  } @else if (!articles.length) {
+    <p class="state">Sin articulos en esta pestana.</p>
+  } @else {
+    <section class="articles-grid">
+      @for (article of articles; track article.slug) {
+        <app-article-card
+          [article]="article"
+          [canFavorite]="canFavorite"
+          [currentUsername]="currentUsername"
+          (favoriteToggle)="toggleFavorite($event)"
+          (deleteRequested)="deleteArticle($event)"
+        />
+      }
+    </section>
+  }
+}

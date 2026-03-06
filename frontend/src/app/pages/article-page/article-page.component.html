@@ -1,0 +1,215 @@
+@if (loading) {
+  <p class="state">Cargando articulo...</p>
+} @else if (error) {
+  <p class="state error">{{ error }}</p>
+} @else if (article) {
+  <article class="article-shell">
+    <header class="article-hero" [class.with-cover]="!!article.coverImage">
+      @if (article.coverImage) {
+        <div class="hero-backdrop" [style.background-image]="'url(' + article.coverImage + ')'"></div>
+      }
+
+      <div class="hero-content">
+        <div class="meta">
+          <a class="meta-author" [routerLink]="['/profile', article.author.username]">
+            <img [src]="article.author.image || 'https://api.dicebear.com/9.x/thumbs/svg?seed=author'" alt="Avatar autor" />
+            <span>{{ article.author.username }}</span>
+          </a>
+          <span>{{ article.createdAt | date: 'mediumDate' }}</span>
+        </div>
+
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.description }}</p>
+
+        <div class="article-meta-pills">
+          <span>{{ article.readingTimeMinutes }} min lectura</span>
+          <span>{{ article.contentFormat === 'markdown' ? 'Markdown' : 'Texto plano' }}</span>
+          @if (article.status === 'draft') {
+            <span class="draft-pill">Borrador</span>
+          }
+          @if (!article.allowComments) {
+            <span>Comentarios desactivados</span>
+          }
+        </div>
+
+        <div class="header-actions">
+          <button type="button" [class.active]="article.favorited" (click)="toggleFavorite()">
+            <span class="heart" aria-hidden="true">&#10084;</span>
+            <span>{{ article.favorited ? 'Te gusta' : 'Me gusta' }}</span>
+            <span class="count">{{ article.favoritesCount }}</span>
+          </button>
+
+          @if (canEditArticle) {
+            <a [routerLink]="['/editor', article.slug]">Editar</a>
+            <button type="button" class="danger" [disabled]="deletingArticle" (click)="deleteArticle()">
+              {{ deletingArticle ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          }
+        </div>
+      </div>
+    </header>
+
+    @if (article.coverImage) {
+      <figure class="cover-image">
+        <img [src]="article.coverImage" alt="Imagen de portada del articulo" />
+      </figure>
+    }
+
+    <section class="article-body">
+      <p>{{ article.body }}</p>
+    </section>
+
+    <footer class="tags">
+      @for (tag of article.tagList; track tag) {
+        <span>#{{ tag }}</span>
+      }
+    </footer>
+  </article>
+
+  <section class="comments-shell">
+    <div class="comments-header">
+      <h2>Comentarios</h2>
+      <span>{{ comments.length }}</span>
+    </div>
+
+    @if (articleActionError) {
+      <p class="state error">{{ articleActionError }}</p>
+    }
+
+    @if (!article.allowComments) {
+      <p class="state">El autor desactivo comentarios para esta publicacion.</p>
+    } @else if (canComment) {
+      <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="submitComment()">
+        <textarea rows="4" formControlName="body" placeholder="Deja tu comentario"></textarea>
+
+        <div class="emoji-row">
+          @for (emoji of quickEmojis; track emoji) {
+            <button type="button" class="emoji-btn" (click)="appendEmojiToNewComment(emoji)">
+              {{ emoji }}
+            </button>
+          }
+        </div>
+
+        <div class="comment-media-row">
+          <label class="upload-btn" for="new-comment-image">Agregar imagen</label>
+          <input
+            id="new-comment-image"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            (change)="onCommentImageSelected($event)"
+          />
+          @if (uploadingCommentImage) {
+            <span class="state">Subiendo imagen...</span>
+          }
+          @if (commentUploadError) {
+            <span class="state error">{{ commentUploadError }}</span>
+          }
+        </div>
+
+        @if (commentImageUrl) {
+          <div class="comment-image-preview">
+            <img [src]="commentImageUrl" alt="Preview imagen comentario" />
+            <button type="button" class="danger-link" (click)="removeNewCommentImage()">Quitar imagen</button>
+          </div>
+        }
+
+        <button type="submit" [disabled]="postingComment">
+          {{ postingComment ? 'Publicando...' : 'Publicar comentario' }}
+        </button>
+      </form>
+    } @else {
+      <p class="state">Inicia sesion para comentar.</p>
+    }
+
+    @if (!comments.length) {
+      <p class="state">Aun no hay comentarios.</p>
+    }
+
+    <div class="comments-list">
+      @for (comment of comments; track comment.id) {
+        <article class="comment-card">
+          <header>
+            <a class="meta-author" [routerLink]="['/profile', comment.author.username]">
+              <img
+                [src]="comment.author.image || 'https://api.dicebear.com/9.x/thumbs/svg?seed=comment'"
+                alt="Avatar comentarista"
+              />
+              <span>{{ comment.author.username }}</span>
+            </a>
+            <span>{{ comment.createdAt | date: 'mediumDate' }}</span>
+          </header>
+
+          @if (isEditingComment(comment.id)) {
+            <form class="comment-form edit-form" [formGroup]="editCommentForm">
+              <textarea rows="3" formControlName="body" placeholder="Edita tu comentario"></textarea>
+
+              <div class="emoji-row">
+                @for (emoji of quickEmojis; track emoji) {
+                  <button type="button" class="emoji-btn" (click)="appendEmojiToEditComment(emoji)">
+                    {{ emoji }}
+                  </button>
+                }
+              </div>
+
+              <div class="comment-media-row">
+                <label class="upload-btn" [for]="'edit-comment-image-' + comment.id">Cambiar imagen</label>
+                <input
+                  [id]="'edit-comment-image-' + comment.id"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  (change)="onEditCommentImageSelected($event)"
+                />
+                @if (uploadingEditImage) {
+                  <span class="state">Subiendo imagen...</span>
+                }
+                @if (editUploadError) {
+                  <span class="state error">{{ editUploadError }}</span>
+                }
+              </div>
+
+              @if (editingCommentImageUrl) {
+                <div class="comment-image-preview">
+                  <img [src]="editingCommentImageUrl" alt="Preview imagen comentario editado" />
+                  <button type="button" class="danger-link" (click)="removeEditCommentImage()">Quitar imagen</button>
+                </div>
+              }
+
+              <div class="edit-actions">
+                <button type="button" (click)="saveEditedComment(comment)">Guardar</button>
+                <button type="button" class="secondary-btn" (click)="cancelEditComment()">Cancelar</button>
+              </div>
+            </form>
+          } @else {
+            <p>{{ comment.body }}</p>
+            @if (comment.imageUrl) {
+              <img class="comment-image" [src]="comment.imageUrl" alt="Imagen del comentario" />
+            }
+          }
+
+          <footer class="comment-footer">
+            <button
+              type="button"
+              class="comment-like-btn"
+              [class.active]="comment.liked"
+              [disabled]="isCommentLikePending(comment.id) || !canLikeComments"
+              (click)="toggleCommentLike(comment)"
+            >
+              <span class="heart" aria-hidden="true">&#10084;</span>
+              <span>{{ comment.liked ? 'Te gusta' : 'Me gusta' }}</span>
+              <span class="count">{{ comment.likesCount }}</span>
+            </button>
+
+            @if (canEditComment(comment)) {
+              <div class="comment-actions">
+                @if (!isEditingComment(comment.id)) {
+                  <button type="button" class="secondary-link" (click)="startEditComment(comment)">Editar</button>
+                }
+                <button type="button" class="danger-link" (click)="deleteComment(comment.id)">Eliminar</button>
+              </div>
+            }
+          </footer>
+        </article>
+      }
+    </div>
+  </section>
+}

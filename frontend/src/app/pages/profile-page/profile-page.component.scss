@@ -1,0 +1,111 @@
+.profile-banner {
+  border: 1px solid var(--border-color);
+  border-radius: 1.2rem;
+  background: var(--surface-card);
+  box-shadow: var(--soft-shadow);
+  padding: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.9rem;
+  align-items: start;
+  animation: profileEnter 0.45s ease both;
+}
+
+.profile-main {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.profile-main img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid color-mix(in oklab, var(--accent-strong), white 70%);
+  box-shadow: var(--soft-shadow);
+}
+
+.profile-banner h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--text-strong);
+}
+
+.profile-banner p {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+}
+
+.profile-banner button {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.profile-banner button:hover {
+  transform: translateY(-1px);
+}
+
+.profile-tabs {
+  margin: 0.9rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-tabs button {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.profile-tabs button.active {
+  color: var(--text-strong);
+  border-color: color-mix(in oklab, var(--accent-strong), white 60%);
+}
+
+.profile-filters {
+  margin-bottom: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.profile-filters select {
+  border: 1px solid var(--border-color);
+  border-radius: 0.65rem;
+  background: var(--surface);
+  color: var(--text-muted);
+  padding: 0.4rem 0.65rem;
+}
+
+.articles-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@keyframes profileEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.state {
+  color: var(--text-muted);
+}
+
+.state.error {
+  color: #b00020;
+}

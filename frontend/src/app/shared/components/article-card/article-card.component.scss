@@ -1,0 +1,193 @@
+.article-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1.1rem;
+  padding: 1.1rem 1.2rem;
+  display: grid;
+  gap: 0.8rem;
+  box-shadow: var(--soft-shadow);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  animation: feedCardEnter 0.45s ease both;
+}
+
+.article-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(16, 38, 77, 0.12);
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.author {
+  color: var(--text-strong);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.author-with-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.author-with-avatar img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.article-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.cover-image-link img {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border-color);
+  display: block;
+}
+
+.article-link h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text-strong);
+}
+
+.article-link p {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+}
+
+.meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.meta-pills span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
+.meta-pills .draft-pill {
+  border-color: color-mix(in oklab, #dd7a00, white 55%);
+  color: #995000;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tags span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+
+.right-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+button {
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button.active {
+  color: var(--accent-strong);
+  border-color: color-mix(in oklab, var(--accent-strong), white 65%);
+  background: color-mix(in oklab, var(--accent-strong) 8%, white);
+}
+
+.heart {
+  font-size: 0.9rem;
+  color: #e76479;
+  transform-origin: center;
+}
+
+.count {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+button.active .heart {
+  animation: heartPulse 0.35s ease;
+}
+
+.owner-action {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.32rem 0.7rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.owner-action.danger {
+  color: #b00020;
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(0.8);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes feedCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

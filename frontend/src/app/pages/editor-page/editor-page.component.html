@@ -1,0 +1,141 @@
+<section class="editor-shell">
+  <header class="editor-header">
+    <h1>{{ slug ? 'Editar articulo' : 'Nuevo articulo' }}</h1>
+    <p>Publica, guarda como borrador y configura opciones avanzadas de tu post.</p>
+  </header>
+
+  @if (loading) {
+    <p class="state">Cargando editor...</p>
+  } @else {
+    <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid-two">
+        <label>
+          Titulo
+          <input type="text" formControlName="title" placeholder="Titulo del articulo" />
+        </label>
+
+        <label>
+          Descripcion
+          <input type="text" formControlName="description" placeholder="Breve resumen" />
+        </label>
+      </div>
+
+      <label>
+        Contenido
+        <textarea rows="12" formControlName="body" placeholder="Desarrolla tu idea"></textarea>
+      </label>
+
+      <div class="quick-tools">
+        <span>Bloques rapidos:</span>
+        @for (snippet of bodySnippets; track snippet.label) {
+          <button type="button" class="chip-btn" (click)="insertSnippet(snippet.value)">
+            {{ snippet.label }}
+          </button>
+        }
+      </div>
+
+      <div class="quick-tools">
+        <span>Emojis:</span>
+        @for (emoji of quickEmojis; track emoji) {
+          <button type="button" class="emoji-btn" (click)="appendBodyEmoji(emoji)">
+            {{ emoji }}
+          </button>
+        }
+      </div>
+
+      <div class="grid-two">
+        <label>
+          Estado del post
+          <select formControlName="status">
+            <option value="published">Publicado</option>
+            <option value="draft">Borrador</option>
+          </select>
+        </label>
+
+        <label>
+          Formato
+          <select formControlName="contentFormat">
+            <option value="plain">Texto plano</option>
+            <option value="markdown">Markdown</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid-two">
+        <label>
+          Tiempo de lectura (0 = automatico)
+          <input type="number" min="0" max="120" formControlName="readingTimeMinutes" />
+          <small>Estimado actual: {{ estimatedReadingTimeMinutes }} min</small>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="allowComments" />
+          Permitir comentarios
+        </label>
+      </div>
+
+      <label>
+        Imagen de portada (URL)
+        <input type="text" formControlName="coverImage" placeholder="https://..." />
+      </label>
+
+      <div class="upload-block">
+        <label for="article-image-upload">Subir imagen</label>
+        <input
+          id="article-image-upload"
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          (change)="onImageSelected($event)"
+        />
+        @if (uploadingImage) {
+          <p class="state">Subiendo imagen...</p>
+        }
+        @if (uploadError) {
+          <p class="error">{{ uploadError }}</p>
+        }
+      </div>
+
+      <label>
+        Galeria de imagenes (URL por linea o coma)
+        <textarea rows="4" formControlName="imageList" placeholder="https://...\nhttps://..."></textarea>
+      </label>
+
+      @if (imagePreviews.length) {
+        <div class="preview-grid">
+          @for (imageUrl of imagePreviews; track imageUrl) {
+            <article>
+              <img [src]="imageUrl" alt="Preview de imagen del articulo" />
+              <button type="button" class="secondary-btn" (click)="useAsCover(imageUrl)">
+                Usar como portada
+              </button>
+            </article>
+          }
+        </div>
+      }
+
+      <label>
+        Tags (coma separada)
+        <input type="text" formControlName="tags" placeholder="angular, nodejs, sequelize" />
+      </label>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="actions-row">
+        <button type="button" [disabled]="submitting || deleting" (click)="submitWithStatus('published')">
+          {{ submitting && form.controls.status.value === 'published' ? 'Publicando...' : 'Publicar' }}
+        </button>
+        <button type="button" class="secondary-btn" [disabled]="submitting || deleting" (click)="submitWithStatus('draft')">
+          {{ submitting && form.controls.status.value === 'draft' ? 'Guardando...' : 'Guardar borrador' }}
+        </button>
+
+        @if (slug) {
+          <button type="button" class="danger-btn" [disabled]="deleting || submitting" (click)="deleteArticle()">
+            {{ deleting ? 'Eliminando...' : 'Eliminar articulo' }}
+          </button>
+        }
+      </div>
+    </form>
+  }
+</section>

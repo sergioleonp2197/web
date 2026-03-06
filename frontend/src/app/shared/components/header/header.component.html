@@ -1,0 +1,26 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" routerLink="/">MediumTS</a>
+
+    <nav class="main-nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+
+      @if (isAuthenticated$ | async) {
+        <a routerLink="/editor" routerLinkActive="active">Nuevo Articulo</a>
+        <a routerLink="/settings" routerLinkActive="active">Configuracion</a>
+
+        @if (currentUser$ | async; as user) {
+          <a [routerLink]="['/profile', user.username]" routerLinkActive="active" class="profile-pill">
+            <img [src]="user.image || 'https://api.dicebear.com/9.x/thumbs/svg?seed=user'" alt="Avatar de usuario" />
+            <span>{{ user.username }}</span>
+          </a>
+        }
+
+        <button type="button" (click)="logout()">Salir</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active">Entrar</a>
+        <a routerLink="/register" routerLinkActive="active">Registro</a>
+      }
+    </nav>
+  </div>
+</header>

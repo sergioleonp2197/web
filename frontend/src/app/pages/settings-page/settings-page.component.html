@@ -1,0 +1,61 @@
+<section class="settings-shell">
+  <header>
+    <h1>Configuracion de cuenta</h1>
+    <p>Actualiza tu perfil y credenciales.</p>
+  </header>
+
+  <form class="settings-form" [formGroup]="form" (ngSubmit)="save()">
+    <div class="avatar-editor">
+      <img
+        [src]="form.controls.image.value || 'https://api.dicebear.com/9.x/thumbs/svg?seed=avatar'"
+        alt="Avatar de usuario"
+      />
+      <label for="avatar-upload" class="avatar-upload-btn">
+        {{ uploadingAvatar ? 'Subiendo...' : 'Subir avatar' }}
+      </label>
+      <input
+        id="avatar-upload"
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        (change)="onAvatarSelected($event)"
+      />
+    </div>
+
+    @if (uploadError) {
+      <p class="error">{{ uploadError }}</p>
+    }
+
+    <label>
+      Usuario
+      <input type="text" formControlName="username" />
+    </label>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" />
+    </label>
+
+    <label>
+      Bio
+      <textarea rows="4" formControlName="bio"></textarea>
+    </label>
+
+    <label>
+      Imagen URL
+      <input type="text" formControlName="image" />
+    </label>
+
+    <label>
+      Nuevo password (opcional)
+      <input type="password" formControlName="password" />
+    </label>
+
+    @if (error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    <button type="submit" [disabled]="saving">
+      {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+    </button>
+  </form>
+</section>

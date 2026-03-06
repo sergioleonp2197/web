@@ -1,0 +1,43 @@
+@use "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Spectral:wght@400;600;700&display=swap");
+
+:root {
+  --font-display: "Spectral", "Times New Roman", serif;
+  --font-ui: "Manrope", "Segoe UI", sans-serif;
+  --surface: #f5f7fb;
+  --surface-card: #ffffff;
+  --text-strong: #182331;
+  --text-muted: #5b6678;
+  --border-color: #d6ddea;
+  --accent-strong: #1b7a6f;
+  --accent-soft: #f8c87a;
+  --chip-bg: #eef2f9;
+  --soft-shadow: 0 8px 24px rgba(16, 38, 77, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  color: var(--text-strong);
+  background:
+    radial-gradient(circle at 10% -5%, #fff4d8 0%, transparent 35%),
+    radial-gradient(circle at 90% 0%, #daf8f2 0%, transparent 28%),
+    linear-gradient(180deg, #f7fbff 0%, #f4f6fb 100%);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}

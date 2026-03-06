@@ -1,0 +1,85 @@
+<section class="hero">
+  <div class="hero-content">
+    <p>Publica ideas, guias y experiencias tecnicas.</p>
+    <h1>Medium clone en Angular + Node + Sequelize</h1>
+  </div>
+</section>
+
+<section class="layout-grid">
+  <div class="feed-column">
+    <div class="feed-header">
+      <button type="button" [class.active]="selectedTag === null" (click)="selectTag(null)">
+        Feed global
+      </button>
+      @if (selectedTag) {
+        <button type="button" class="active">{{ selectedTag }}</button>
+      }
+    </div>
+
+    <div class="filters-panel">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (keyup.enter)="applyFilters()"
+        placeholder="Buscar por titulo, descripcion o contenido"
+      />
+
+      <select [(ngModel)]="sort" (change)="applyFilters()">
+        <option value="latest">Mas recientes</option>
+        <option value="popular">Mas populares</option>
+        <option value="oldest">Mas antiguos</option>
+      </select>
+
+      @if (canUseAllStatusFilter) {
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option value="published">Solo publicados</option>
+          <option value="all">Publicados + mis borradores</option>
+        </select>
+      }
+
+      <button type="button" (click)="applyFilters()">Aplicar</button>
+      <button type="button" class="secondary" (click)="clearFilters()">Limpiar</button>
+    </div>
+
+    @if (loading) {
+      <p class="state-text">Cargando articulos...</p>
+    } @else if (error) {
+      <p class="state-text error">{{ error }}</p>
+    } @else if (!articles.length) {
+      <p class="state-text">No hay articulos para esta vista.</p>
+    } @else {
+      <div class="feed-list">
+        @for (article of articles; track article.slug) {
+          <app-article-card
+            [article]="article"
+            [canFavorite]="canFavorite"
+            [currentUsername]="currentUsername"
+            (favoriteToggle)="toggleFavorite($event)"
+            (deleteRequested)="deleteArticle($event)"
+          />
+        }
+      </div>
+    }
+
+    @if (pages.length > 1) {
+      <nav class="pagination">
+        @for (pageNumber of pages; track pageNumber) {
+          <button type="button" [class.active]="pageNumber === page" (click)="selectPage(pageNumber)">
+            {{ pageNumber }}
+          </button>
+        }
+      </nav>
+    }
+  </div>
+
+  <aside class="tags-column">
+    <h2>Topics</h2>
+    <div class="tag-list">
+      @for (tag of tags; track tag) {
+        <button type="button" [class.active]="selectedTag === tag" (click)="selectTag(tag)">
+          #{{ tag }}
+        </button>
+      }
+    </div>
+  </aside>
+</section>

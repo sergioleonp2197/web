@@ -1,0 +1,56 @@
+<article class="article-card">
+  <header class="meta-row">
+    <a class="author author-with-avatar" [routerLink]="['/profile', article.author.username]">
+      <img [src]="article.author.image || 'https://api.dicebear.com/9.x/thumbs/svg?seed=author'" alt="Avatar autor" />
+      <span>{{ article.author.username }}</span>
+    </a>
+    <span>{{ article.createdAt | date: 'mediumDate' }}</span>
+  </header>
+
+  @if (article.coverImage) {
+    <a class="cover-image-link" [routerLink]="['/article', article.slug]">
+      <img [src]="article.coverImage" alt="Imagen de portada del articulo" />
+    </a>
+  }
+
+  <a class="article-link" [routerLink]="['/article', article.slug]">
+    <h3>{{ article.title }}</h3>
+    <p>{{ article.description }}</p>
+  </a>
+
+  <div class="meta-pills">
+    <span>{{ article.readingTimeMinutes }} min</span>
+    @if (article.status === 'draft') {
+      <span class="draft-pill">Borrador</span>
+    }
+    @if (!article.allowComments) {
+      <span>Sin comentarios</span>
+    }
+  </div>
+
+  <footer class="actions-row">
+    <div class="tags">
+      @for (tag of article.tagList; track tag) {
+        <span>{{ tag }}</span>
+      }
+    </div>
+
+    <div class="right-actions">
+      @if (isOwner) {
+        <a class="owner-action" [routerLink]="['/editor', article.slug]">Editar</a>
+        <button type="button" class="owner-action danger" (click)="requestDelete()">Eliminar</button>
+      }
+
+      <button
+        type="button"
+        [disabled]="!canFavorite"
+        [class.active]="article.favorited"
+        (click)="favoriteToggle.emit(article)"
+      >
+        <span class="heart" aria-hidden="true">&#10084;</span>
+        <span>{{ article.favorited ? 'Te gusta' : 'Me gusta' }}</span>
+        <span class="count">{{ article.favoritesCount }}</span>
+      </button>
+    </div>
+  </footer>
+</article>
